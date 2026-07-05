@@ -1,6 +1,9 @@
-from datetime import datetime
+import calendar
+from datetime import date, datetime
 
 from database.db import get_db
+
+QUARTER_MONTHS = {1: (1, 3), 2: (4, 6), 3: (7, 9), 4: (10, 12)}
 
 
 def get_expense_by_id(expense_id, user_id):
@@ -170,3 +173,49 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
         }
         for r, pct in zip(rows, pcts)
     ]
+
+
+def quarter_date_range(year, quarter):
+    start_month, end_month = QUARTER_MONTHS[quarter]
+    date_from = date(year, start_month, 1).isoformat()
+    end_day = calendar.monthrange(year, end_month)[1]
+    date_to = date(year, end_month, end_day).isoformat()
+    return date_from, date_to
+
+
+def get_available_years(user_id):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT DISTINCT substr(date, 1, 4) AS year FROM expenses "
+        "WHERE user_id = ? ORDER BY year DESC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    return [int(row["year"]) for row in rows]
+
+
+def get_quarterly_summary(user_id, year):
+    summary = []
+    for quarter in (1, 2, 3, 4):
+        date_from, date_to = quarter_date_range(year, quarter)
+        stats = get_summary_stats(user_id, date_from, date_to)
+        summary.append(
+            {
+                "quarter": quarter,
+                "total": stats["total"],
+                "count": stats["count"],
+                "top_category": stats["top_category"],
+            }
+        )
+    return summary
+
+
+def get_quarter_detail(user_id, year, quarter):
+    date_from, date_to = quarter_date_range(year, quarter)
+    return {
+        "quarter": quarter,
+        "categories": get_category_breakdown(user_id, date_from, date_to),
+        "transactions": get_recent_transactions(
+            user_id, limit=1000, date_from=date_from, date_to=date_to
+        ),
+    }

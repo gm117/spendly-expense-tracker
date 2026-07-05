@@ -7,42 +7,111 @@
 
 {% block content %}
 <div class="analytics-page">
-  <div class="cs-bg-blob cs-blob-tl"></div>
-  <div class="cs-bg-blob cs-blob-br"></div>
+  <div class="analytics-inner">
 
-  <div class="cs-card">
-    <div class="cs-corner cs-corner-tr"></div>
-    <div class="cs-corner cs-corner-bl"></div>
+    <div class="analytics-header-card">
+      <h1 class="analytics-title">Quarterly Analytics</h1>
+      <p class="analytics-subtitle">See how your spending breaks down by quarter.</p>
+    </div>
 
-    <div class="cs-icon-wrap">
-      <div class="cs-icon-glow"></div>
-      <div class="cs-icon-box">
-        <svg class="cs-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+    {% if not years %}
+    <div class="analytics-empty-card">
+      <p>No expenses yet — add some expenses to see your quarterly breakdown.</p>
+    </div>
+    {% else %}
+
+    <div class="year-bar">
+      <div class="year-presets">
+        {% for y in years %}
+        <a href="{{ url_for('analytics', year=y) }}"
+           class="year-btn{% if y == year %} year-btn--active{% endif %}">{{ y }}</a>
+        {% endfor %}
       </div>
     </div>
 
-    <div class="cs-badge">
-      <span>Coming Soon</span>
+    <div class="quarters-grid">
+      {% for q in quarters %}
+      <a href="{{ url_for('analytics', year=year, quarter=q.quarter) }}"
+         class="quarter-card{% if quarter == q.quarter %} quarter-card--active{% endif %}">
+        <span class="quarter-label">Q{{ q.quarter }}</span>
+        <span class="quarter-stat-value">₹{{ q.total }}</span>
+        <span class="quarter-stat-sub">{{ q.count }} transactions</span>
+        <span class="quarter-stat-sub">Top: {{ q.top_category }}</span>
+      </a>
+      {% endfor %}
     </div>
 
-    <h2 class="cs-title">Advanced Analytics</h2>
+    {% if detail %}
+    <div class="quarter-detail">
+      <div class="quarter-detail-header">
+        <h2 class="section-title">Q{{ detail.quarter }} {{ year }} Detail</h2>
+        <a href="{{ url_for('analytics', year=year) }}" class="quarter-clear-link">Clear selection</a>
+      </div>
 
-    <p class="cs-desc">
-      We're working on powerful insights and visualisations to help you
-      understand your spending patterns better.
-    </p>
+      <div class="analytics-grid">
 
-    <div class="cs-dots">
-      <div class="cs-dot" style="animation-delay: 0s"></div>
-      <div class="cs-dot" style="animation-delay: 0.2s"></div>
-      <div class="cs-dot" style="animation-delay: 0.4s"></div>
+        <div class="analytics-section">
+          <h3 class="section-title">Transactions</h3>
+          <div class="tx-table-wrapper">
+            <table class="tx-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th class="tx-amount-col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for tx in detail.transactions %}
+                <tr>
+                  <td class="tx-date">{{ tx.date }}</td>
+                  <td class="tx-desc">{{ tx.description }}</td>
+                  <td>
+                    <span class="cat-badge cat-badge--{{ tx.category | lower }}">
+                      {{ tx.category }}
+                    </span>
+                  </td>
+                  <td class="tx-amount">₹{{ tx.amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not detail.transactions %}
+                <tr>
+                  <td colspan="4" class="tx-empty">No expenses found for this quarter.</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="analytics-section">
+          <h3 class="section-title">By Category</h3>
+          <div class="category-list">
+            {% for cat in detail.categories %}
+            <div class="cat-row">
+              <div class="cat-row-header">
+                <span class="cat-row-name">{{ cat.name }}</span>
+                <span class="cat-row-amount">₹{{ cat.amount }}</span>
+              </div>
+              <div class="cat-bar-track">
+                <div class="cat-bar cat-bar--{{ cat.name | lower }}"
+                     style="width: {{ cat.percent }}%"></div>
+              </div>
+            </div>
+            {% endfor %}
+            {% if not detail.categories %}
+            <p class="tx-empty">No expenses found for this quarter.</p>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
     </div>
-    <p class="cs-tagline">We're crafting something special</p>
+    {% endif %}
 
-    <div class="cs-bottom-line"></div>
+    {% endif %}
+
   </div>
 </div>
 {% endblock %}
