@@ -17,8 +17,11 @@ from werkzeug.security import check_password_hash
 from database.db import create_user, get_db, get_user_by_email, init_db, seed_db
 from database.queries import (
     delete_expense_by_id,
+    get_available_years,
     get_category_breakdown,
     get_expense_by_id,
+    get_quarter_detail,
+    get_quarterly_summary,
     get_recent_transactions,
     get_summary_stats,
     get_user_by_id,
@@ -58,6 +61,22 @@ def _months_ago(today, n):
         m += 12
         y -= 1
     return date(y, m, 1).isoformat()
+
+
+def _parse_year(val, default):
+    try:
+        year = int(val)
+    except (TypeError, ValueError):
+        return default
+    return year if 1 <= year <= 9999 else default
+
+
+def _parse_quarter(val):
+    try:
+        quarter = int(val)
+    except (TypeError, ValueError):
+        return None
+    return quarter if quarter in (1, 2, 3, 4) else None
 
 
 # ------------------------------------------------------------------ #
@@ -185,7 +204,20 @@ def profile():
 def analytics():
     if not session.get("user_id"):
         return redirect(url_for("login"))
-    return render_template("analytics.html")
+
+    uid = session["user_id"]
+    years = get_available_years(uid)
+    year = _parse_year(request.args.get("year"), default=date.today().year)
+    quarter = _parse_quarter(request.args.get("quarter"))
+
+    return render_template(
+        "analytics.html",
+        years=years,
+        year=year,
+        quarter=quarter,
+        quarters=get_quarterly_summary(uid, year),
+        detail=get_quarter_detail(uid, year, quarter) if quarter else None,
+    )
 
 
 @app.route("/expenses/add", methods=["GET", "POST"])
