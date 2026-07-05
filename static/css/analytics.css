@@ -1,0 +1,183 @@
+.analytics-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 50%, #e8e8e8 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background blobs */
+.cs-bg-blob {
+  position: absolute;
+  width: 24rem;
+  height: 24rem;
+  background: var(--accent);
+  opacity: 0.05;
+  border-radius: 50%;
+  filter: blur(64px);
+  pointer-events: none;
+}
+.cs-blob-tl { top: -8rem; left: -8rem; }
+.cs-blob-br { bottom: -8rem; right: -8rem; }
+
+/* Main card */
+.cs-card {
+  position: relative;
+  max-width: 32rem;
+  width: 100%;
+  text-align: center;
+  background: var(--paper-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* Corner accents */
+.cs-corner {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  background: linear-gradient(to var(--dir, bottom right), var(--accent), transparent);
+  opacity: 0.08;
+  pointer-events: none;
+}
+.cs-corner-tr {
+  top: 0; right: 0;
+  border-bottom-left-radius: 100%;
+  --dir: bottom left;
+}
+.cs-corner-bl {
+  bottom: 0; left: 0;
+  border-top-right-radius: 100%;
+  --dir: top right;
+}
+
+/* Icon */
+.cs-icon-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.cs-icon-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6rem;
+  height: 6rem;
+  background: var(--accent);
+  opacity: 0.18;
+  border-radius: 50%;
+  filter: blur(20px);
+}
+.cs-icon-box {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  background: linear-gradient(135deg, var(--accent), #0d2b18);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(26, 71, 42, 0.3);
+  transition: transform 0.3s ease;
+}
+.cs-icon-box:hover { transform: scale(1.05); }
+.cs-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #ffffff;
+}
+
+/* Badge */
+.cs-badge {
+  display: inline-block;
+  padding: 0.4rem 1.25rem;
+  background: linear-gradient(90deg, var(--accent), #2d5c40);
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(26, 71, 42, 0.2);
+}
+.cs-badge span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-family: var(--font-body);
+}
+
+/* Title */
+.cs-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), #0d2b18);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+/* Description */
+.cs-desc {
+  color: var(--ink-muted);
+  font-size: 0.975rem;
+  line-height: 1.7;
+  margin: 0 auto 2rem;
+  max-width: 22rem;
+  font-family: var(--font-body);
+}
+
+/* Pulsing dots */
+@keyframes cs-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+.cs-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.cs-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: linear-gradient(135deg, var(--accent), #2d5c40);
+  border-radius: 50%;
+  animation: cs-pulse 1.4s ease-in-out infinite;
+}
+
+.cs-tagline {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* Bottom decorative line */
+.cs-bottom-line {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8rem;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+  border-radius: 999px;
+}
+
+/* CSS custom property aliases (set on body by style.css) */
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}

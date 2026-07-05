@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Spendly — Track Every Rupee{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">{% endblock %}
+
+{% block content %}
+
+<section class="hero-v2">
+    <div class="hero-v2-inner">
+
+        <div class="hero-v2-badge">
+            <span class="hero-v2-dot"></span>
+            Free to use · No credit card needed
+        </div>
+
+        <h1 class="hero-v2-title">
+            Track every rupee.<br>
+            <span class="hero-v2-title-accent">Know where it goes.</span>
+        </h1>
+
+        <p class="hero-v2-subtitle">
+            Spendly helps you log expenses, spot patterns, and stay<br>
+            on budget — without the spreadsheet headache.
+        </p>
+
+        <div class="hero-v2-actions">
+            <a href="{{ url_for('register') }}" class="hero-v2-btn">Create free account</a>
+            <a href="#" id="open-demo-modal" class="hero-v2-btn">See how it works</a>
+        </div>
+
+        <div class="hero-v2-mock">
+            <div class="mock-browser">
+                <div class="mock-browser-bar">
+                    <span class="mock-dot mock-dot-red"></span>
+                    <span class="mock-dot mock-dot-yellow"></span>
+                    <span class="mock-dot mock-dot-green"></span>
+                </div>
+                <div class="mock-browser-body">
+                    <div class="mock-stats">
+                        <div class="mock-stat-card">
+                            <span class="mock-stat-label">This month</span>
+                            <span class="mock-stat-value">₹18,240</span>
+                            <span class="mock-stat-sub mock-stat-sub--danger">+12% vs last</span>
+                        </div>
+                        <div class="mock-stat-card">
+                            <span class="mock-stat-label">Budget left</span>
+                            <span class="mock-stat-value">₹6,760</span>
+                            <span class="mock-stat-sub mock-stat-sub--success">43% remaining</span>
+                        </div>
+                        <div class="mock-stat-card">
+                            <span class="mock-stat-label">Transactions</span>
+                            <span class="mock-stat-value">34</span>
+                            <span class="mock-stat-sub">this month</span>
+                        </div>
+                    </div>
+                    <div class="mock-cats">
+                        <div class="mock-cat-row">
+                            <span class="mock-cat-label">Food</span>
+                            <div class="mock-cat-track">
+                                <div class="mock-cat-bar mock-cat-bar--orange" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="mock-cat-row">
+                            <span class="mock-cat-label">Travel</span>
+                            <div class="mock-cat-track">
+                                <div class="mock-cat-bar mock-cat-bar--blue" style="width: 55%"></div>
+                            </div>
+                        </div>
+                        <div class="mock-cat-row">
+                            <span class="mock-cat-label">Bills</span>
+                            <div class="mock-cat-track">
+                                <div class="mock-cat-bar mock-cat-bar--purple" style="width: 38%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="features">
+    <div class="features-inner">
+        <div class="feature-card">
+            <div class="feature-icon">₹</div>
+            <h3 class="feature-title">Log expenses instantly</h3>
+            <p class="feature-body">Add any expense in seconds. Category, amount, date, description — all in one simple form.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">◎</div>
+            <h3 class="feature-title">Understand your patterns</h3>
+            <p class="feature-body">See exactly where your money goes with category breakdowns and monthly summaries.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">◷</div>
+            <h3 class="feature-title">Filter by time period</h3>
+            <p class="feature-body">View your spending for any date range — last week, last month, or a custom period.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="cta-inner">
+        <h2 class="cta-title">Ready to take control?</h2>
+        <p class="cta-body">Join thousands of people who track their expenses with Spendly.</p>
+        <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
+    </div>
+</section>
+
+<!-- Demo modal -->
+<div id="demo-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box">
+        <button class="modal-close" id="close-demo-modal" aria-label="Close">&times;</button>
+        <div class="modal-video-wrapper">
+            <iframe
+                id="demo-iframe"
+                src=""
+                data-src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
+                title="Spendly demo"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const modal    = document.getElementById('demo-modal');
+    const iframe   = document.getElementById('demo-iframe');
+    const openBtn  = document.getElementById('open-demo-modal');
+    const closeBtn = document.getElementById('close-demo-modal');
+
+    function openModal() {
+        iframe.src = iframe.dataset.src;
+        modal.setAttribute('aria-hidden', 'false');
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        iframe.src = '';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openModal();
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+}());
+</script>
+{% endblock %}
